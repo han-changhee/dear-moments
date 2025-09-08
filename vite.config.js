@@ -11,10 +11,10 @@ export default defineConfig({
     port: 5173,
   },
   plugins: [vue(), mkcert()],
-  base: '/dear-moments/',
+  base: '/dear-moments/',   // ✅ GitHub Pages repo 이름과 동일하게!
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url)), // ✅ '@' => src
+      '@': fileURLToPath(new URL('./src', import.meta.url)), // '@' → src
     },
   },
 })
