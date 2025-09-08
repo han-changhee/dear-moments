@@ -11,6 +11,7 @@ export default defineConfig({
     port: 5173,
   },
   plugins: [vue(), mkcert()],
+  base: '/dear-moments',
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)), // ✅ '@' => src

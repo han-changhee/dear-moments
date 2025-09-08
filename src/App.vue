@@ -1,10 +1,32 @@
+<!-- src/App.vue -->
 <template>
-  <RouterView v-slot="{ Component, route }">
-    <Transition :name="transitionName" mode="out-in">
-      <component :is="Component" :key="route.fullPath" />
-    </Transition>
-  </RouterView>
+  <RouterView />
 </template>
+
+<!--<script setup>-->
+<!--import { RouterView } from 'vue-router'-->
+
+<!--// 혹시 이전에 남아있던 스크롤 잠금이 있으면 풀기-->
+<!--if (typeof document !== 'undefined') {-->
+<!--  const de = document.documentElement-->
+<!--  de.style.overflow = ''-->
+<!--  de.style.overscrollBehaviorY = ''-->
+<!--}-->
+<!--</script>-->
+
+<!--<style>-->
+<!--html, body, #app { height: 100%; }-->
+<!--</style>-->
+
+
+
+<!--<template>-->
+<!--  <RouterView v-slot="{ Component, route }">-->
+<!--    <Transition :name="transitionName" mode="out-in">-->
+<!--      <component :is="Component" :key="route.fullPath" />-->
+<!--    </Transition>-->
+<!--  </RouterView>-->
+<!--</template>-->
 
 <script setup>
 import { computed } from 'vue'
@@ -30,3 +52,4 @@ const transitionName = computed(() =>
 .slide-right-enter-from { opacity: 0; transform: translateX(-20px); }
 .slide-right-leave-to   { opacity: 0; transform: translateX(20px); }
 </style>
+

@@ -484,7 +484,7 @@ function onVisChange(){
 .item.right .shot{ order:1; }
 .shot{ margin:0; }
 .shot img{ width:100%; height:auto; display:block; border-radius:16px; box-shadow:0 12px 28px rgba(0,0,0,.14); }
-.date{ margin:0 0 8px; font-weight:900; font-size:clamp(16px, 2.5vw, 20px); }
+.date{ margin:0 0 8px; font-weight:900; color: #ff8bb0; font-size:clamp(16px, 2.5vw, 20px); }
 .desc{ margin:0; color:#374151; font-size:clamp(14px, 2.3vw, 16px); line-height:1.6; }
 
 @media (max-width: 860px){

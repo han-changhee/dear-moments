@@ -144,6 +144,7 @@ onMounted(() => {
 /* 텍스트 */
 .title{
   margin: 6px 0 6px;
+  color: #000000;
   font-weight: 900;
   font-size: clamp(18px, 3.8vw, 22px);
   letter-spacing: .2px;

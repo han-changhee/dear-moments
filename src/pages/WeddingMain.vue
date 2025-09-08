@@ -1,3 +1,4 @@
+<!-- src/pages/WeddingMain.vue -->
 <template>
   <section class="page">
     <header class="hero" :style="{'--hero-url': `url('${heroUrl}')`}">
@@ -20,7 +21,7 @@
           }"
         >
           <div class="frame">
-            <img :src="s" alt="" />
+            <img :src="s" alt="" @load="onSlideImgLoad" />
           </div>
         </div>
       </div>
@@ -67,7 +68,7 @@ const slides = [
 
 // 달력(2024-06)
 const year = 2024
-const month = 5
+const month = 5 // 0-indexed(6월)
 const targetDay = 5
 const weekdays = ['일', '월', '화', '수', '목', '금', '토']
 const firstWeekday = new Date(year, month, 1).getDay()
@@ -75,19 +76,19 @@ const daysInMonth = new Date(year, month + 1, 0).getDate()
 const isTarget = (d) => d === targetDay
 
 /* -------------------------
-   슬라이드(초기 1초 지연) + 1초 사이클
-   - SHOW_MS ~600ms 노출
-   - SUCK_MS ~400ms 흡입
+   슬라이드(초기 1초 지연) + SHOW/SUCK 순환
 ------------------------- */
-const slidesActive = ref(false)   // ✅ 1초 뒤 활성화
+const slidesActive = ref(false)
 const shownIndex   = ref(0)
 const sucking      = ref(false)
-let loopTimer = 0
-let suckTimer = 0
 
 const SHOW_MS = 1000
 const SUCK_MS = 380
-const INITIAL_DELAY_MS = 1000  // ✅ 첫 진입 지연
+const INITIAL_DELAY_MS = 1000
+
+let initialTimer = 0
+let showTimer    = 0
+let suckTimer    = 0
 
 const calRef = ref(null)
 function updateCalCssVars() {
@@ -102,44 +103,45 @@ function updateCalCssVars() {
   document.documentElement.style.setProperty('--cal-y', `${(cy / vh) * 100}%`)
 }
 
-function startLoop(){
+function startLoop () {
   stopLoop()
+  if (!slides.length) return
   updateCalCssVars()
-  loopTimer = setInterval(() => {
-    // 노출 → 흡입
+  // 루프는 항상 "보여주기" 단계로 시작
+  sucking.value = false
+  scheduleNextCycle()
+}
+
+function scheduleNextCycle () {
+  // 1) SHOW 단계 유지
+  clearTimeout(showTimer)
+  showTimer = setTimeout(() => {
+    // 2) SUCK 단계
     sucking.value = true
     clearTimeout(suckTimer)
     suckTimer = setTimeout(() => {
-      sucking.value = false
+      // 3) 다음 슬라이드로 전환 후 다시 SHOW
       shownIndex.value = (shownIndex.value + 1) % slides.length
+      sucking.value = false
       updateCalCssVars()
+      scheduleNextCycle()
     }, SUCK_MS)
-  }, SHOW_MS + SUCK_MS)
-}
-function stopLoop(){
-  clearInterval(loopTimer); loopTimer = 0
-  clearTimeout(suckTimer);  suckTimer = 0
+  }, SHOW_MS)
 }
 
-onMounted(() => {
-  // ✅ 처음 1초 동안 슬라이드 비표시 → 자연스럽게 페이드인 후 시작
-  setTimeout(() => {
-    slidesActive.value = true
-    startLoop()
-  }, INITIAL_DELAY_MS)
+function stopLoop () {
+  clearTimeout(initialTimer); initialTimer = 0
+  clearTimeout(showTimer);    showTimer    = 0
+  clearTimeout(suckTimer);    suckTimer    = 0
+}
 
-  window.addEventListener('resize', updateCalCssVars)
-  window.addEventListener('orientationchange', updateCalCssVars)
+function onSlideImgLoad () {
+  // 이미지 로드 후에도 달력 위치 기준 업데이트(흡입 포인트 정확도 향상)
   updateCalCssVars()
-})
-onBeforeUnmount(() => {
-  stopLoop()
-  window.removeEventListener('resize', updateCalCssVars)
-  window.removeEventListener('orientationchange', updateCalCssVars)
-})
+}
 
 /* -------------------------
-   위/아래 스와이프/휠 네비게이션(쿨다운 유지)
+   위/아래 스와이프/휠 네비게이션(쿨다운)
 ------------------------- */
 const router = useRouter()
 const goPrev = () => router.push('/flight')
@@ -147,7 +149,8 @@ const goNext = () => router.push('/gallery')
 
 let navigating = false
 let coolTimer = 0
-const COOLDOWN_MS = 10000
+// 너무 길면 멈춘 것처럼 보여서 1.4초로 조정
+const COOLDOWN_MS = 1400
 const THRESH_TOUCH = 28
 const THRESH_WHEEL = 10
 
@@ -157,8 +160,8 @@ function onTouchMove(e){
   if (navigating) return
   const currY = e.touches?.[0]?.clientY ?? 0
   const dy = currY - startY
-  if ((window.scrollY || 0) <= 0 && dy > THRESH_TOUCH) triggerNav(goPrev)
-  if (dy < -THRESH_TOUCH) triggerNav(goNext)
+  if ((window.scrollY || 0) <= 0 && dy >  THRESH_TOUCH) triggerNav(goPrev)
+  if (dy < -THRESH_TOUCH)                       triggerNav(goNext)
 }
 function onWheel(e){
   if (navigating) return
@@ -173,13 +176,32 @@ function triggerNav(fn){
   clearTimeout(coolTimer)
   coolTimer = setTimeout(() => { navigating = false }, COOLDOWN_MS)
 }
+
+/* -------------------------
+   마운트/언마운트
+------------------------- */
 onMounted(() => {
+  // 초기 1초 뒤 슬라이드 활성화 → 루프 시작
+  initialTimer = setTimeout(() => {
+    slidesActive.value = true
+    startLoop()
+  }, INITIAL_DELAY_MS)
+
+  window.addEventListener('resize', updateCalCssVars)
+  window.addEventListener('orientationchange', updateCalCssVars)
+  updateCalCssVars()
+
   document.documentElement.style.overscrollBehaviorY = 'none'
   window.addEventListener('touchstart', onTouchStart, { passive: true })
   window.addEventListener('touchmove',  onTouchMove,  { passive: true })
   window.addEventListener('wheel',      onWheel,      { passive: true })
 })
+
 onBeforeUnmount(() => {
+  stopLoop()
+  window.removeEventListener('resize', updateCalCssVars)
+  window.removeEventListener('orientationchange', updateCalCssVars)
+
   document.documentElement.style.overscrollBehaviorY = ''
   window.removeEventListener('touchstart', onTouchStart)
   window.removeEventListener('touchmove',  onTouchMove)
@@ -327,7 +349,6 @@ onBeforeUnmount(() => {
   max-height: 80vh;   /* 화면 세로에 맞게 제한 */
   border-radius: 12px;
 }
-
 
 /* 등장(더 매끈한 easeOut) */
 .slide.show {
