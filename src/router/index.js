@@ -11,7 +11,7 @@ import LoadingPage from '@/pages/LoadingPage.vue'
 export const navDirection = ref('forward')
 
 const routes = [
-    { path: '/',        redirect: '/flight' },    // 시작을 flight로
+    { path: '/',        redirect: '/#/flight' },    // 시작을 flight로
     { path: '/flight',  name: 'flight',  component: FlightScrollGeo,  meta: { index: 0 } },
     { path: '/loading', name: 'loading', component: LoadingPage,      meta: { index: 0.5 } },
     { path: '/main',    name: 'main',    component: WeddingMain,      meta: { index: 1 } },
