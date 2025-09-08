@@ -43,7 +43,6 @@ import WeddingMain from '@/pages/WeddingMain.vue'
 import GalleryTimeline from '@/pages/GalleryTimeline.vue'
 import LoadingPage from '@/pages/LoadingPage.vue'
 
-// ✅ 전환 방향 공유용 (forward | back)
 export const navDirection = ref('forward')
 
 const routes = [
@@ -55,16 +54,17 @@ const routes = [
     { path: '/:pathMatch(.*)*', redirect: '/flight' },
 ]
 
-export const router = createRouter({
-    history: createWebHashHistory(), // ✅ 여기 수정
+const router = createRouter({
+    history: createWebHashHistory(),
     routes,
     scrollBehavior() { return { left: 0, top: 0 } },
 })
 
-// ✅ 이동할 때 방향 계산 (index 기준)
-router.beforeEach(async (to, from, next) => {
+router.beforeEach((to, from, next) => {
     const toIdx = to.meta.index ?? 0
     const frIdx = from.meta.index ?? 0
     navDirection.value = toIdx >= frIdx ? 'forward' : 'back'
     next()
 })
+
+export default router

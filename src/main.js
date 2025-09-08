@@ -1,6 +1,6 @@
 import { createApp } from 'vue'
 import App from './App.vue'
-import { router } from '@/router'
+import router from '@/router'
 
 // 전역 스타일 (리셋 + 유틸 + 컴포넌트 공용)
 import '@/assets/styles/base.css'
