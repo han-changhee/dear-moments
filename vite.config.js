@@ -6,15 +6,15 @@ import { fileURLToPath, URL } from 'node:url'
 
 export default defineConfig({
   server: {
-    https: true,   // mkcert 사용할 때 필수 (로컬 HTTPS)
-    host: true,    // 동일 네트워크 다른 기기에서도 접속
+    https: true,
+    host: true,
     port: 5173,
   },
   plugins: [vue(), mkcert()],
-  base: '/dear-moments/',   // ✅ GitHub Pages repo 이름과 동일하게!
+  base: '/dear-moments/',   // 📌 레포 이름과 일치
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url)), // '@' → src
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
 })
