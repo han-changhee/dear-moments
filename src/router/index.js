@@ -20,7 +20,7 @@ const routes = [
 ]
 
 const router = createRouter({
-    history: createWebHashHistory(),   // ✅ base 제거 (아무 것도 넣지 않기)
+    history: createWebHashHistory(),
     routes,
     scrollBehavior() { return { left: 0, top: 0 } },
 })
