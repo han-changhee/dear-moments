@@ -1,4 +1,3 @@
-
 // src/router/index.js
 import { createRouter, createWebHashHistory } from 'vue-router'
 import { ref } from 'vue'
