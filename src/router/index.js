@@ -11,7 +11,7 @@ import LoadingPage from '@/pages/LoadingPage.vue'
 export const navDirection = ref('forward')
 
 const routes = [
-    { path: '/',        redirect: '/flight' },
+    { path: '/',        redirect: '/flight' },    // 시작을 flight로
     { path: '/flight',  name: 'flight',  component: FlightScrollGeo,  meta: { index: 0 } },
     { path: '/loading', name: 'loading', component: LoadingPage,      meta: { index: 0.5 } },
     { path: '/main',    name: 'main',    component: WeddingMain,      meta: { index: 1 } },
@@ -20,7 +20,7 @@ const routes = [
 ]
 
 const router = createRouter({
-    history: createWebHashHistory('/dear-moments/'),
+    history: createWebHashHistory(),   // ✅ base 제거 (아무 것도 넣지 않기)
     routes,
     scrollBehavior() { return { left: 0, top: 0 } },
 })
