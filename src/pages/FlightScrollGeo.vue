@@ -84,12 +84,10 @@ const HOLD_END_MS = 600           // 도착 후 잠깐 멈춤
 
 /* ---------- 자원 ---------- */
 const PLANE_W = 80, PLANE_H = 80
-// const PLANE_URL = 'https://drive.google.com/file/d/1WMtTUPifkmE8xg30NLnBHkI37xPOn3td/view?usp=drive_link'
-const PLANE_URL = 'https://drive.google.com/uc?id=1WMtTUPifkmE8xg30NLnBHkI37xPOn3td'
+const PLANE_URL = 'https://drive.google.com/file/d/1WMtTUPifkmE8xg30NLnBHkI37xPOn3td/view?usp=drive_link'
 
 const CH_W = 24, CH_H = 24
-// const CH_URL = 'https://drive.google.com/file/d/1wiw_-cI8Olf-ZUGqFnZjHdwDhRE5Ay8A/view?usp=drive_link'
-const CH_URL = 'https://drive.google.com/uc?id=1wiw_-cI8Olf-ZUGqFnZjHdwDhRE5Ay8A'
+const CH_URL = 'https://drive.google.com/file/d/1wiw_-cI8Olf-ZUGqFnZjHdwDhRE5Ay8A/view?usp=drive_link'
 /* ---------- 크기/참조 ---------- */
 const W = 1200, H = 800
 const scene = ref(null)
