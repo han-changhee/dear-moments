@@ -1,15 +1,12 @@
-<!-- src/pages/WeddingMain.vue -->
 <template>
   <section class="page">
     <header class="hero" :style="{'--hero-url': `url('${heroUrl}')`}">
-      <!-- 중앙 타이틀 -->
       <div class="hero-inner">
         <h1 class="title">결혼했습니다</h1>
         <p class="subtitle">우리의 시작을 기록합니다</p>
         <div class="date-tag">2024.06.05</div>
       </div>
 
-      <!-- 슬라이드 (초기 1초간 숨김 → 부드럽게 등장) -->
       <div class="slides" :class="{ 'is-active': slidesActive }" aria-hidden="true">
         <div
             v-for="(s, i) in slides"
@@ -26,7 +23,6 @@
         </div>
       </div>
 
-      <!-- 하단 플로팅 달력 -->
       <div ref="calRef" class="calendar-float" role="group" aria-label="2024년 6월 달력">
         <h2 class="cal-title">2024년 6월</h2>
 
@@ -58,12 +54,16 @@ import { useRouter } from 'vue-router'
 
 /* -------------------------
    이미지 / 데이터
+   * Google Drive 직접 다운로드 링크로 수정됨 (가장 안정적인 임베드 방식) *
+   * File ID: [129WD-9TgsgrHoU05fhf-yVV6rXluTEnL]
 ------------------------- */
-const heroUrl = new URL('@/assets/photos/image-main.jpeg', import.meta.url).href
+// [주의] 이 링크가 작동하려면 Google Drive 파일의 공유 설정이 '링크가 있는 모든 사용자에게 공개'여야 합니다.
+const heroUrl = 'https://drive.google.com/uc?id=129WD-9TgsgrHoU05fhf-yVV6rXluTEnL&export=download'
+
 const slides = [
-  new URL('@/assets/photos/image1.jpg', import.meta.url).href,
-  new URL('@/assets/photos/image2.jpg', import.meta.url).href,
-  new URL('@/assets/photos/image3.jpg', import.meta.url).href,
+  'https://drive.google.com/uc?id=19yKc3XPNarNzBD0irdgFW7v_IMeHpK59&export=download',
+  'https://drive.google.com/uc?id=1E3FGnljqAhKEPsdjkPQd2KO_czUQxXMV&export=download',
+  'https://drive.google.com/uc?id=129WD-9TgsgrHoU05fhf-yVV6rXluTEnL&export=download',
 ]
 
 // 달력(2024-06)
