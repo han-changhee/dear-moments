@@ -70,12 +70,12 @@ const heroUrl = '/api/photos/wedding-main.jpeg'
 // ]
 
 const slides = [
-  'http://58.121.126.75:28081/api/photos/wedding_1.jpeg',
-  'http://58.121.126.75:28081/api/photos/wedding_2.jpeg',
-  'http://58.121.126.75:28081/api/photos/wedding_3.jpeg',
-  'http://58.121.126.75:28081/api/photos/wedding_4.jpeg',
-  'http://58.121.126.75:28081/api/photos/wedding_5.jpeg',
-  'http://58.121.126.75:28081/api/photos/wedding_6.jpeg',
+  '/api/photos/wedding_1.jpeg',
+  '/api/photos/wedding_2.jpeg',
+  '/api/photos/wedding_3.jpeg',
+  '/api/photos/wedding_4.jpeg',
+  '/api/photos/wedding_5.jpeg',
+  '/api/photos/wedding_6.jpeg',
 ]
 
 // 달력(2024-06)
