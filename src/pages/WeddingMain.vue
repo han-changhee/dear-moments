@@ -58,12 +58,24 @@ import { useRouter } from 'vue-router'
    * File ID: [129WD-9TgsgrHoU05fhf-yVV6rXluTEnL]
 ------------------------- */
 // [주의] 이 링크가 작동하려면 Google Drive 파일의 공유 설정이 '링크가 있는 모든 사용자에게 공개'여야 합니다.
-const heroUrl = 'https://drive.google.com/uc?id=129WD-9TgsgrHoU05fhf-yVV6rXluTEnL&export=download'
+const heroUrl = '/api/photos/wedding-main.jpeg'
+
+// const slides = [
+//   'http://localhost:8080/api/photos/wedding_1.jpeg',
+//   'http://localhost:8080/api/photos/wedding_2.jpeg',
+//   'http://localhost:8080/api/photos/wedding_3.jpeg',
+//   'http://localhost:8080/api/photos/wedding_4.jpeg',
+//   'http://localhost:8080/api/photos/wedding_5.jpeg',
+//   'http://localhost:8080/api/photos/wedding_6.jpeg',
+// ]
 
 const slides = [
-  'https://drive.google.com/uc?id=19yKc3XPNarNzBD0irdgFW7v_IMeHpK59&export=download',
-  'https://drive.google.com/uc?id=1E3FGnljqAhKEPsdjkPQd2KO_czUQxXMV&export=download',
-  'https://drive.google.com/uc?id=129WD-9TgsgrHoU05fhf-yVV6rXluTEnL&export=download',
+  '/api/photos/wedding_1.jpeg',
+  '/api/photos/wedding_2.jpeg',
+  '/api/photos/wedding_3.jpeg',
+  '/api/photos/wedding_4.jpeg',
+  '/api/photos/wedding_5.jpeg',
+  '/api/photos/wedding_6.jpeg',
 ]
 
 // 달력(2024-06)
