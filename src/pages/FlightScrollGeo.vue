@@ -84,9 +84,9 @@ const HOLD_END_MS = 600           // 도착 후 잠깐 멈춤
 
 /* ---------- 자원 ---------- */
 const PLANE_W = 80, PLANE_H = 80
-const PLANE_URL = '/api/photos/ttang-fly.png'
+const PLANE_URL = 'http://58.121.126.75:28081/api/photos/ttang-fly.png'
 const CH_W = 24, CH_H = 24
-const CH_URL = '/api/photos/ttung.png'
+const CH_URL = 'http://58.121.126.75:28081/api/photos/ttung.png'
 /* ---------- 크기/참조 ---------- */
 const W = 1200, H = 800
 const scene = ref(null)

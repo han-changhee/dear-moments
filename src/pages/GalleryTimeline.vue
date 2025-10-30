@@ -169,22 +169,22 @@ const events = [
   {
     date: '2019 · 첫 만남 · 初めての出会い',
     text: '여름 햇살 가득한 전주에서 처음 마주한 순간, 두 사람의 이야기가 시작되었어요.<br>夏の陽射しが降り注ぐ全州で初めて出会った瞬間、二人の物語が始まりました。',
-    img: '/api/photos/story_1.jpeg',
+    img: 'http://58.121.126.75:28081/api/photos/story_1.jpeg',
   },
   {
     date: '2020 - 2022 · 강제 이별',
     text: '예상치 못한 코로나로 서로를 멀리서 바라봐야 했던 시간, 그리움은 더 깊어졌습니다.',
-    img: '/api/photos/story_1.jpeg',
+    img: 'http://58.121.126.75:28081/api/photos/story_1.jpeg',
   },
   {
     date: '2023 · 프로포즈',
     text: '길었던 기다림 끝, 함께 걸어갈 평생을 약속하며 행복의 시작을 맞이했어요.',
-    img: '/api/photos/story_1.jpeg',
+    img: 'http://58.121.126.75:28081/api/photos/story_1.jpeg',
   },
   {
     date: '2024 · 결혼',
     text: '이제는 하나의 길을 걸으며, 같은 하늘 아래 새로운 여정을 함께 이어갑니다.',
-    img: '/api/photos/story_1.jpeg',
+    img: 'http://58.121.126.75:28081/api/photos/story_1.jpeg',
   },
 ]
 
