@@ -60,15 +60,6 @@ import { useRouter } from 'vue-router'
 // [주의] 이 링크가 작동하려면 Google Drive 파일의 공유 설정이 '링크가 있는 모든 사용자에게 공개'여야 합니다.
 const heroUrl = '/api/photos/wedding-main.jpeg'
 
-// const slides = [
-//   'http://localhost:8080/api/photos/wedding_1.jpeg',
-//   'http://localhost:8080/api/photos/wedding_2.jpeg',
-//   'http://localhost:8080/api/photos/wedding_3.jpeg',
-//   'http://localhost:8080/api/photos/wedding_4.jpeg',
-//   'http://localhost:8080/api/photos/wedding_5.jpeg',
-//   'http://localhost:8080/api/photos/wedding_6.jpeg',
-// ]
-
 const slides = [
   '/api/photos/wedding_1.jpeg',
   '/api/photos/wedding_2.jpeg',

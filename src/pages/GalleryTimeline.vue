@@ -1,162 +1,120 @@
-<!-- src/pages/GalleryTimeline.vue -->
 <template>
-  <section class="timeline" aria-label="우리의 이야기 타임라인">
-    <h2 class="title">우리의 이야기</h2>
+  <div class="gallery-wrapper">
+    <section class="timeline" aria-label="우리의 이야기 타임라인">
+      <h2 class="title">우리의 이야기</h2>
 
-    <div class="line" aria-hidden="true"></div>
+      <div class="line" aria-hidden="true"></div>
 
-    <!-- 타임라인 -->
-    <article
-        v-for="(ev, i) in events"
-        :key="i"
-        class="item reveal"
-        :class="i % 2 ? 'right' : 'left'"
-    >
-      <div class="content">
-        <h3 class="date">{{ ev.date }}</h3>
-        <p class="desc" v-html="ev.text"></p>
+      <article
+          v-for="(ev, i) in events"
+          :key="i"
+          class="item reveal"
+          :class="i % 2 ? 'right' : 'left'"
+      >
+        <div class="content">
+          <h3 class="date">{{ ev.date }}</h3>
+          <p class="desc" v-html="ev.text"></p>
+        </div>
+        <figure class="shot">
+          <img :src="ev.img" :alt="ev.text" decoding="async" loading="lazy" />
+        </figure>
+      </article>
+
+      <div
+          v-if="messages.length"
+          class="cyl-msg"
+          @mouseenter="pauseRotation"
+          @mouseleave="startRotation"
+      >
+        <div class="cyl-track">
+          <div v-if="prevMessage" class="cyl-item prev" @click="goPrevMessage">
+            <p class="txt">
+              "{{ prevMessage.content }}"
+              <span class="who">— {{ prevMessage.name || '익명' }}</span>
+            </p>
+          </div>
+
+          <div v-if="currentMessage" class="cyl-item current">
+            <p class="txt">
+              "{{ currentMessage.content }}"
+              <span class="who">— {{ currentMessage.name || '익명' }}</span>
+            </p>
+          </div>
+
+          <div v-if="nextMessage" class="cyl-item next" @click="goNextMessage">
+            <p class="txt">
+              "{{ nextMessage.content }}"
+              <span class="who">— {{ nextMessage.name || '익명' }}</span>
+            </p>
+          </div>
+        </div>
+
+        <div class="cyl-fade left" aria-hidden="true"></div>
+        <div class="cyl-fade right" aria-hidden="true"></div>
       </div>
-      <figure class="shot">
-        <img :src="ev.img" :alt="ev.text" decoding="async" loading="lazy" />
-      </figure>
-    </article>
 
-    <!-- 실린더 캐러셀 (실시간 메시지) -->
-    <div
-        v-if="messages.length"
-        class="cyl-msg"
-        @mouseenter="pauseRotation"
-        @mouseleave="startRotation"
-    >
-      <div class="cyl-track">
-        <div v-if="prevMessage" class="cyl-item prev" @click="goPrevMessage">
-          <p class="txt">
-            “{{ prevMessage.text }}”
-            <span class="who">— {{ prevMessage.name || '익명' }}</span>
-          </p>
-        </div>
-
-        <div v-if="currentMessage" class="cyl-item current">
-          <p class="txt">
-            “{{ currentMessage.text }}”
-            <span class="who">— {{ currentMessage.name || '익명' }}</span>
-          </p>
-        </div>
-
-        <div v-if="nextMessage" class="cyl-item next" @click="goNextMessage">
-          <p class="txt">
-            “{{ nextMessage.text }}”
-            <span class="who">— {{ nextMessage.name || '익명' }}</span>
-          </p>
-        </div>
-      </div>
-
-      <!-- 가장자리 페이드 -->
-      <div class="cyl-fade left" aria-hidden="true"></div>
-      <div class="cyl-fade right" aria-hidden="true"></div>
-    </div>
-
-    <!-- CTA -->
-    <div class="cta-wrap">
-      <button class="btn-cta" type="button" @click="openDialog">
-        🎁 축하의 마음 전하기
-      </button>
-    </div>
-  </section>
-
-  <!-- 모달 -->
-  <div
-      v-if="showDialog"
-      class="modal"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="gift-title"
-      @keydown.esc="closeDialog"
-      @click.self="closeDialog"
-  >
-    <div class="modal-card" ref="dialogCard" tabindex="-1">
-      <header class="modal-head">
-        <h3 id="gift-title">💌 축하의 마음 전하는 곳</h3>
-        <button class="icon-btn" type="button" @click="closeDialog" aria-label="닫기">✕</button>
-      </header>
-
-      <!-- 메시지 폼 -->
-      <div class="msg-form">
-        <h4 class="form-title">✨ 메시지 남기기</h4>
-
-        <label for="msgName">성함 (선택)</label>
-        <input
-            id="msgName"
-            v-model="newName"
-            type="text"
-            autocomplete="name"
-            placeholder="이름을 적어주세요"
-        />
-
-        <label for="msgText">메시지</label>
-        <textarea
-            id="msgText"
-            v-model="newText"
-            rows="3"
-            maxlength="120"
-            placeholder="축하 메시지를 남겨주세요 (최대 120자)"
-        ></textarea>
-
-        <button class="btn-send" type="button" :disabled="sending" @click="sendMessage">
-          {{ sending ? '전송 중...' : '메시지 남기기' }}
+      <div class="cta-wrap">
+        <button class="btn-cta" type="button" @click="openDialog">
+          🎁 축하의 마음 전하기
         </button>
       </div>
+    </section>
 
-      <p class="modal-sub divider">
-        따뜻한 마음만으로도 충분해요.<br />
-        그래도 전하고 싶으시다면 아래로 부탁드립니다. 🙏
-      </p>
+    <div
+        v-if="showDialog"
+        class="modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="gift-title"
+        @keydown.esc="closeDialog"
+        @click.self="closeDialog"
+    >
+      <div class="modal-card" ref="dialogCard" tabindex="-1">
+        <header class="modal-head">
+          <h3 id="gift-title">💌 축하의 마음 전하는 곳</h3>
+          <button class="icon-btn" type="button" @click="closeDialog" aria-label="닫기">✕</button>
+        </header>
 
-      <!-- 얇은 계좌 리스트 (한 줄) -->
-      <ul class="acct-list">
-        <li v-for="(a, idx) in accounts" :key="idx" class="acct">
-          <span class="acct-line">
-            <strong class="who">{{ a.holder }}</strong>
-            <span class="bank">{{ a.bank }}</span>
-            <span class="number">{{ a.number }}</span>
-          </span>
-          <button class="copy-btn" type="button" @click="copyDigits(a.number)">복사</button>
-        </li>
-      </ul>
+        <div class="msg-form">
+          <h4 class="form-title">✨ 메시지 남기기</h4>
 
-      <footer class="modal-foot">
-        <button class="btn-close" type="button" @click="closeDialog">닫기</button>
-      </footer>
+          <label for="msgName">성함 (선택)</label>
+          <input
+              id="msgName"
+              v-model="newName"
+              type="text"
+              autocomplete="name"
+              placeholder="이름을 적어주세요"
+          />
+
+          <label for="msgText">메시지</label>
+          <textarea
+              id="msgText"
+              v-model="newText"
+              rows="3"
+              maxlength="120"
+              placeholder="축하 메시지를 남겨주세요 (최대 120자)"
+          ></textarea>
+
+          <button class="btn-send" type="button" :disabled="sending" @click="sendMessage">
+            {{ sending ? '전송 중...' : '메시지 남기기' }}
+          </button>
+        </div>
+
+        <footer class="modal-foot">
+          <button class="btn-close" type="button" @click="closeDialog">닫기</button>
+        </footer>
+      </div>
+
+      <div v-if="toast" class="toast">{{ toast }}</div>
     </div>
-
-    <!-- 토스트 -->
-    <div v-if="toast" class="toast">{{ toast }}</div>
   </div>
 </template>
 
 <script setup>
-/**
- * ✅ 리팩토링 포인트
- * - Supabase v2 클라이언트 구성 (env: VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY)
- * - 초기 로딩(loadFromSupabase) + 실시간 구독(subscribeRealtime)
- * - 삽입 성공 시 realtime INSERT로 목록 자동 반영
- * - /main 제스처 복귀 시 스크롤 잠금/채널/타이머/모달 안전 정리
- * - visibilitychange로 탭 비활성 시 회전 일시정지(선택사항)
- */
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter, onBeforeRouteLeave } from 'vue-router'
-import { createClient } from '@supabase/supabase-js'
-
-
-/* ========= Supabase ========= */
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL
-const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY
-const TABLE_NAME   = 'messages' // id, name, text, created_at
-
-const supabase =
-    SUPABASE_URL && SUPABASE_KEY
-        ? createClient(SUPABASE_URL, SUPABASE_KEY)
-        : null
+import axios from 'axios'
 
 /* ========= 상수 ========= */
 const ROLL_INTERVAL = 2500
@@ -173,18 +131,18 @@ const events = [
   },
   {
     date: '2020 - 2022 · 강제 이별',
-    text: '예상치 못한 코로나로 서로를 멀리서 바라봐야 했던 시간, 그리움은 더 깊어졌습니다.',
-    img: '/api/photos/story_1.jpeg',
+    text: '예상치 못한 코로나로 서로를 멀리서 바라봐야 했던 시간, 그리움은 더 깊어졌습니다.<br>予期せぬコロナ禍で、互いを遠くから見つめるしかなかった時間、愛しさはより一層深まりました。',
+    img: '/api/photos/story_2.jpeg',
   },
   {
     date: '2023 · 프로포즈',
-    text: '길었던 기다림 끝, 함께 걸어갈 평생을 약속하며 행복의 시작을 맞이했어요.',
-    img: '/api/photos/story_1.jpeg',
+    text: '길었던 기다림 끝, 함께 걸어갈 평생을 약속하며 행복의 시작을 맞이했어요.<br>長い時を経て、共に歩む生涯を誓い、幸せな門出を迎えることとなりました。',
+    img: '/api/photos/story_3.jpeg',
   },
   {
     date: '2024 · 결혼',
-    text: '이제는 하나의 길을 걸으며, 같은 하늘 아래 새로운 여정을 함께 이어갑니다.',
-    img: '/api/photos/story_1.jpeg',
+    text: '이제는 하나의 길을 걸으며, 같은 하늘 아래 새로운 여정을 함께 이어갑니다.<br>これからは一つの道を歩み、同じ空の下、新たな旅路を共に歩んでまいります。',
+    img: '/api/photos/story_4.jpeg',
   },
 ]
 
@@ -206,23 +164,75 @@ function mountObserver () {
   targets.forEach(el => io.observe(el))
 }
 
-/* ========= 네비 제스처(위로 올리면 /main) ========= */
+/* ========= 네비 제스처 ========= */
 const router = useRouter()
 const goPrev = () => router.push('/main')
 
 let navigating = false
 let coolTimer = 0
+
+// 터치용
 let startY = 0
-function onTouchStart (e) { startY = e.touches?.[0]?.clientY ?? 0 }
+let lastTouchY = 0
+let lastScrollY = 0
+let stuckAtTop = false
+
+// 휠용
+let wheelStuckCount = 0
+let wheelTimer = 0
+
+function onTouchStart (e) {
+  startY = e.touches?.[0]?.clientY ?? 0
+  lastTouchY = startY
+  lastScrollY = window.scrollY || 0
+  stuckAtTop = false
+}
+
 function onTouchMove (e) {
   if (navigating) return
-  const dy = (e.touches?.[0]?.clientY ?? 0) - startY
-  if ((window.scrollY || 0) <= 0 && dy > THRESH_TOUCH) triggerNav(goPrev)
+
+  const currentY = e.touches?.[0]?.clientY ?? 0
+  const currentScrollY = window.scrollY || 0
+  const dy = currentY - startY
+  const touchDelta = currentY - lastTouchY   // 손가락 이동량
+  const scrollDelta = currentScrollY - lastScrollY  // 스크롤 이동량
+
+  // 최상단에서 손가락은 아래로 움직이는데 스크롤은 안 움직임 = 막힘
+  if (currentScrollY <= 0 && touchDelta > 3 && Math.abs(scrollDelta) < 1) {
+    stuckAtTop = true
+  }
+
+  // 막힌 상태에서 충분히 당기면 이동
+  if (stuckAtTop && dy > THRESH_TOUCH) {
+    triggerNav(goPrev)
+  }
+
+  lastTouchY = currentY
+  lastScrollY = currentScrollY
 }
+
 function onWheel (e) {
   if (navigating) return
-  if ((window.scrollY || 0) <= 0 && e.deltaY < -THRESH_WHEEL) triggerNav(goPrev)
+
+  const currentScrollY = window.scrollY || 0
+
+  // 최상단에서 위로 휠하는데 스크롤이 안 움직이면 카운트 증가
+  if (currentScrollY <= 0 && e.deltaY < -THRESH_WHEEL) {
+    wheelStuckCount++
+  } else {
+    wheelStuckCount = 0
+  }
+
+  // 휠 세션 리셋 타이머
+  clearTimeout(wheelTimer)
+  wheelTimer = setTimeout(() => { wheelStuckCount = 0 }, 200)
+
+  // 2번 이상 막히면 이동 (연속으로 휠해야 함)
+  if (wheelStuckCount >= 2) {
+    triggerNav(goPrev)
+  }
 }
+
 function triggerNav (fn) {
   if (navigating) return
   navigating = true
@@ -231,15 +241,10 @@ function triggerNav (fn) {
   coolTimer = setTimeout(() => (navigating = false), COOLDOWN_MS)
 }
 
-/* ========= 모달/복사 ========= */
+/* ========= 모달 ========= */
 const showDialog = ref(false)
 const dialogCard = ref(null)
 const toast = ref('')
-
-const accounts = [
-  { holder: '신랑 · 한창희',       bank: '카카오뱅크', number: '3333-07-8920528' },
-  { holder: '신부 · 키무라 에미코', bank: '농협',   number: '' },
-]
 
 function openDialog () {
   showDialog.value = true
@@ -250,32 +255,14 @@ function closeDialog () {
   showDialog.value = false
   document.documentElement.style.overflow = ''
 }
-function copyDigits (raw) {
-  const onlyDigits = (raw || '').replace(/\D/g, '')
-  if (navigator.clipboard?.writeText) {
-    navigator.clipboard.writeText(onlyDigits).then(() => showToast(`복사됨: ${onlyDigits}`))
-  } else {
-    const ta = document.createElement('textarea')
-    ta.value = onlyDigits
-    ta.setAttribute('readonly', '')
-    ta.style.position = 'fixed'
-    ta.style.opacity = '0'
-    document.body.appendChild(ta)
-    ta.select()
-    try { document.execCommand('copy'); showToast(`복사됨: ${onlyDigits}`) }
-    catch { showToast('복사 실패 😵') }
-    document.body.removeChild(ta)
-  }
-}
 
-/* ========= 메시지: Supabase 실시간 + 회전 ========= */
-const messages = ref([])          // [{id, name, text, created_at}]
+/* ========= 메시지: API 연동 + 회전 ========= */
+const messages = ref([])
 const currentIndex = ref(0)
 const sending = ref(false)
 let   rotationTimer = 0
-let   realtimeChannel = null
 
-const currentMessage = computed(() => messages.value[currentIndex.value] || null)
+const currentMessage = computed(() => messages.value[currentIndex.value] || { name: '로딩 중', content: '메시지를 불러오는 중입니다...' })
 const prevIndex = computed(() =>
     messages.value.length ? (currentIndex.value - 1 + messages.value.length) % messages.value.length : -1
 )
@@ -285,52 +272,51 @@ const nextIndex = computed(() =>
 const prevMessage = computed(() => messages.value[prevIndex.value] || null)
 const nextMessage = computed(() => messages.value[nextIndex.value] || null)
 
-async function loadFromSupabase () {
-
-  if (!supabase) {
-    console.warn('[supabase] env가 비어 있음. 실시간/원격 로드 비활성')
-    return
+async function loadMessages() {
+  try {
+    const response = await axios.get('/api/messages');
+    messages.value = response.data.sort((a, b) =>
+        new Date(b.createTime) - new Date(a.createTime)
+    );
+    currentIndex.value = 0;
+  } catch (error) {
+    console.error('[API] GET error:', error);
+    showToast('메시지를 불러오지 못했어요 😢');
   }
-  const { data, error } = await supabase
-      .from(TABLE_NAME)
-      .select('id, name, text, created_at')
-      .order('created_at', { ascending: false })
-      .limit(100)
-  if (error) {
-    console.error('[supabase] select error:', error)
-    showToast('메시지를 불러오지 못했어요 😢')
-    return
-  }
-  messages.value = data || []
-  currentIndex.value = 0
 }
 
-/** 실시간 구독 (INSERT) */
-function subscribeRealtime () {
-  if (!supabase) return
-  // 중복 구독 방지
-  if (realtimeChannel) {
-    supabase.removeChannel(realtimeChannel)
-    realtimeChannel = null
+const newName = ref('')
+const newText = ref('')
+
+async function sendMessage() {
+  if (!newText.value.trim()) {
+    showToast('메시지를 입력해주세요');
+    return;
   }
-  realtimeChannel = supabase
-      .channel(`public:${TABLE_NAME}`)
-      .on(
-          'postgres_changes',
-          { event: 'INSERT', schema: 'public', table: TABLE_NAME },
-          payload => {
-            const row = payload.new
-            // 같은 id가 이미 있으면 중복 삽입 방지
-            if (!messages.value.some(m => m.id === row.id)) {
-              messages.value.unshift(row)
-              currentIndex.value = 0
-            }
-          }
-      )
-      .subscribe((status) => {
-        // 'SUBSCRIBED'가 되면 정상
-        // console.log('realtime status:', status)
-      })
+
+  sending.value = true;
+
+  const payload = {
+    name: newName.value.trim() || '익명',
+    content: newText.value.trim(),
+  };
+
+  try {
+    const response = await axios.post('/api/messages', payload);
+    const savedMessage = response.data;
+
+    messages.value.unshift(savedMessage);
+    currentIndex.value = 0;
+
+    newName.value = '';
+    newText.value = '';
+    showToast('메시지가 등록되었습니다 🎉');
+  } catch (error) {
+    console.error('[API] POST error:', error);
+    showToast('전송 실패 😵');
+  } finally {
+    sending.value = false;
+  }
 }
 
 function startRotation () {
@@ -351,37 +337,6 @@ function goNextMessage () {
   currentIndex.value = (currentIndex.value + 1) % messages.value.length
 }
 
-/** 메시지 전송 (Supabase insert) */
-const newName = ref('')
-const newText = ref('')
-async function sendMessage () {
-  if (!newText.value.trim()) {
-    showToast('메시지를 입력해주세요')
-    return
-  }
-  if (!supabase) {
-    showToast('실시간 서버 설정이 필요해요(환경변수 확인)')
-    return
-  }
-  sending.value = true
-  const payload = {
-    name: newName.value.trim() || null,
-    text: newText.value.trim(),
-  }
-  const { error } = await supabase.from(TABLE_NAME).insert(payload)
-  sending.value = false
-
-  if (error) {
-    console.error('[supabase] insert error:', error)
-    showToast('전송 실패 😵')
-    return
-  }
-  // 성공 → 폼 초기화 (목록 반영은 realtime INSERT가 수행)
-  newName.value = ''
-  newText.value = ''
-  showToast('메시지가 등록되었습니다 🎉')
-}
-
 /* ========= 토스트 ========= */
 let toastTimer = 0
 function showToast (msg) {
@@ -398,20 +353,15 @@ onMounted(async () => {
   window.addEventListener('touchmove',  onTouchMove,  { passive: true })
   window.addEventListener('wheel',      onWheel,      { passive: true })
 
-  // 탭 비활성 시 자동 회전 일시정지(선택)
   document.addEventListener('visibilitychange', onVisChange)
 
-  if (supabase) {
-    await loadFromSupabase()
-    subscribeRealtime()
-  }
+  await loadMessages()
   startRotation()
 })
 
 onBeforeUnmount(() => {
   io?.disconnect()
 
-  // ✅ 잠금/모달/타이머 정리
   document.documentElement.style.overscrollBehaviorY = ''
   document.documentElement.style.overflow = ''
   showDialog.value = false
@@ -423,22 +373,15 @@ onBeforeUnmount(() => {
 
   clearTimeout(coolTimer)
   clearTimeout(toastTimer)
+  clearTimeout(wheelTimer)
   stopRotation()
-
-  // ✅ 실시간 구독 해제
-  if (supabase && realtimeChannel) {
-    supabase.removeChannel(realtimeChannel)
-    realtimeChannel = null
-  }
 })
 
-/** 라우트 떠날 때도 안전정리 (이전 페이지로 돌아갈 때 화면 안 나오는 문제 방지) */
 onBeforeRouteLeave(() => {
   document.documentElement.style.overflow = ''
   showDialog.value = false
 })
 
-/* 탭 전환 시 자동 회전 제어(선택) */
 function onVisChange(){
   if (document.hidden) pauseRotation()
   else startRotation()
@@ -446,7 +389,6 @@ function onVisChange(){
 </script>
 
 <style scoped>
-/* ===== 페이지/타이틀/라인 ===== */
 .timeline{
   position: relative;
   min-height: 100svh;
@@ -466,7 +408,6 @@ function onVisChange(){
   transform: translateX(-50%);
 }
 
-/* ===== 타임라인 아이템 ===== */
 .item{
   display:grid;
   grid-template-columns: 1fr 1fr;
@@ -494,7 +435,6 @@ function onVisChange(){
   .item.left .shot, .item.right .shot{ order:1; }
 }
 
-/* ===== CTA ===== */
 .cta-wrap{ position: sticky; bottom: 24px; display:grid; place-items:center; margin-top: 18px; }
 .btn-cta{
   min-height:44px; padding:12px 18px; border-radius:999px; border:0; font-weight:800; cursor:pointer;
@@ -503,7 +443,6 @@ function onVisChange(){
 }
 .btn-cta:active{ transform: translateY(1px); box-shadow:0 8px 18px rgba(255,138,163,.28); }
 
-/* ===== 모달 ===== */
 .modal{ position:fixed; inset:0; display:grid; place-items:center; background:rgba(0,0,0,.45); backdrop-filter:blur(4px); z-index:999; }
 .modal-card{
   width:min(92vw,560px); background:#fff; color:#111; border-radius:20px; border:1px solid rgba(0,0,0,.08);
@@ -515,9 +454,7 @@ function onVisChange(){
 .modal-head h3{ margin:0; font-size:20px; font-weight:900; color:#b80c4f; }
 .icon-btn{ border:0; background:transparent; font-size:20px; line-height:1; cursor:pointer; opacity:.6; }
 .icon-btn:hover{ opacity:1; }
-.modal-sub{ margin:10px 0 14px; color:#475569; font-size:14px; }
 
-/* 메시지 폼 */
 .msg-form{
   margin:12px 0 20px; padding:16px; border-radius:16px; background:#fff5f7; border:1px solid rgba(255,138,163,.25);
   display:grid; gap:10px;
@@ -536,13 +473,11 @@ function onVisChange(){
 .btn-send:hover{ box-shadow:0 4px 12px rgba(255,138,163,.3); }
 .btn-send:active{ transform: translateY(1px); }
 
-/* 입력 중 글자/캐럿 */
 .msg-form input, .msg-form textarea{
   background:#fff !important; color:#111 !important; caret-color:#111;
 }
 .msg-form input::placeholder, .msg-form textarea::placeholder{ color:#94a3b8; opacity:1; }
 
-/* ===== 실린더 캐러셀 ===== */
 .cyl-msg{
   position: relative;
   margin: 26px auto 6px;
@@ -585,7 +520,6 @@ function onVisChange(){
   transform: translate(calc(-50% - 35%), -50%) rotateY(22deg) translateZ(-40px) scale(.94);
   opacity: .55; filter: blur(.6px); cursor: pointer;
 }
-cyl-item.next,
 .cyl-item.next{
   transform: translate(calc(-50% + 35%), -50%) rotateY(-22deg) translateZ(-40px) scale(.94);
   opacity: .55; filter: blur(.6px); cursor: pointer;
@@ -597,7 +531,6 @@ cyl-item.next,
 .cyl-fade.left{  left:0;  background: linear-gradient(to right, rgba(255,255,255,1), rgba(255,255,255,0)); }
 .cyl-fade.right{ right:0; background: linear-gradient(to left,  rgba(255,255,255,1), rgba(255,255,255,0)); }
 
-/* 다크 대응(옵션) */
 :where(.page, .timeline)[data-dark] .cyl-item,
 :where(.page, .timeline).dark .cyl-item{
   background: rgba(17,17,17,.92);
@@ -612,35 +545,13 @@ cyl-item.next,
   background: linear-gradient(to left, rgba(17,17,17,1), rgba(17,17,17,0));
 }
 
-/* 구분선 */
-.divider{ text-align:center; margin:18px 0; font-size:13px; color:#64748b; border-top:1px dashed rgba(0,0,0,.1); padding-top:14px; }
-
-/* 계좌 리스트 (얇게 + 한 줄) */
-.acct-list{ list-style:none; padding:0; margin:0; display:grid; gap:8px; }
-.acct{
-  display:flex; justify-content:space-between; align-items:center;
-  padding:8px 10px; border-radius:10px; background:#f9fafb; border:1px solid rgba(0,0,0,.05);
-}
-.acct-line{ display:flex; flex-wrap:wrap; gap:6px; align-items:baseline; }
-.acct .who{ font-weight:700; font-size:13px; }
-.acct .bank{ font-size:12px; color:#64748b; }
-.acct .number{ font-family:ui-monospace, Menlo, Consolas, monospace; font-size:12px; color:#111; }
-.copy-btn{
-  padding:4px 10px; font-size:12px; border-radius:999px; border:0; background:#111; color:#fff; font-weight:700; cursor:pointer;
-  transition: background .2s ease;
-}
-.copy-btn:hover{ background:#333; }
-
-/* 닫기 버튼(오른쪽 하단 살짝 바깥) */
-.modal-foot{ display:flex; justify-content:flex-end; margin-top:20px; position:relative; height:50px; }
+.modal-foot{ display:flex; justify-content:flex-end; margin-top:20px; }
 .btn-close{
-  position:absolute; right:10px; bottom:-10px;
   padding:10px 16px; border-radius:999px; border:0; background:#ff8aa3; color:#111; font-weight:800; cursor:pointer;
   box-shadow:0 6px 16px rgba(255,138,163,.35); transition: transform .15s ease, box-shadow .2s ease;
 }
 .btn-close:active{ transform: translateY(1px); box-shadow:0 4px 12px rgba(255,138,163,.25); }
 
-/* 토스트 */
 .toast{
   position:fixed; left:50%; bottom:24px; transform:translateX(-50%);
   background:rgba(17,17,17,.95); color:#fff; padding:10px 14px; border-radius:999px; font-size:13px;

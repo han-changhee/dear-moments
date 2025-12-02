@@ -1,5 +1,6 @@
 // src/router/index.js
-import { createRouter, createWebHashHistory } from 'vue-router'
+
+import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
 import { ref } from 'vue'
 
 import FlightScrollGeo from '@/pages/FlightScrollGeo.vue'
@@ -19,7 +20,7 @@ const routes = [
 ]
 
 const router = createRouter({
-    history: createWebHashHistory(),
+    history: createWebHistory('/'),
     routes,
     scrollBehavior() { return { left: 0, top: 0 } },
 })
@@ -27,7 +28,9 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
     const toIdx = to.meta.index ?? 0
     const frIdx = from.meta.index ?? 0
-    navDirection.value = toIdx >= frIdx ? 'forward' : 'back'
+
+    // 💡 수정된 부분: toIdx가 frIdx보다 작을 때(위로 이동할 때) 'forward'로 설정합니다.
+    navDirection.value = toIdx <= frIdx ? 'forward' : 'back'
     next()
 })
 
