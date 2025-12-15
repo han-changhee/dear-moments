@@ -100,7 +100,25 @@
             {{ sending ? '전송 중...' : '메시지 남기기' }}
           </button>
         </div>
+        <div class="account-section">
+          <h4 class="form-title">💸 마음 전하실 곳</h4>
 
+          <div class="account-row">
+            <span class="label">신랑측</span>
+            <span class="bank">토스뱅크</span>
+            <span class="number">1000-2449-3255</span>
+            <button class="btn-copy" @click="copyAccount('100024493255')">복사</button>
+          </div>
+          <p class="holder">예금주: 한창희</p>
+
+          <div class="account-row">
+            <span class="label">신부측</span>
+            <span class="bank">토스뱅크</span>
+            <span class="number">1000-6080-1736</span>
+            <button class="btn-copy" @click="copyAccount('100060801736')">복사</button>
+          </div>
+          <p class="holder">예금주: 키무라 에미코</p>
+        </div>
         <footer class="modal-foot">
           <button class="btn-close" type="button" @click="closeDialog">닫기</button>
         </footer>
@@ -127,12 +145,27 @@ const events = [
   {
     date: '2019 · 첫 만남 · 初めての出会い',
     text: '여름 햇살 가득한 전주에서 처음 마주한 순간, 두 사람의 이야기가 시작되었어요.<br>夏の陽射しが降り注ぐ全州で初めて出会った瞬間、二人の物語が始まりました。',
-    img: '/api/photos/story_1.jpeg',
+    img: '/api/photos/story_1-1.jpeg',
+  },
+  {
+    date: '',
+    text: '',
+    img: '/api/photos/story_1-2.jpeg',
+  },
+  {
+    date: '2019 · 첫 일본여행 · 初めての日本旅行',
+    text: '태풍이 몰아치던 날, 저는 두려움보다 설렘을 안고 그녀에게 향했습니다.<br>台風が吹き荒れる日、私は恐れよりもときめきを抱いて彼女のもとへ向かいました。',
+    img: '/api/photos/story_1-3.jpeg',
+  },
+  {
+    date: '',
+    text: '',
+    img: '/api/photos/story_2-1.jpeg',
   },
   {
     date: '2020 - 2022 · 강제 이별',
     text: '예상치 못한 코로나로 서로를 멀리서 바라봐야 했던 시간, 그리움은 더 깊어졌습니다.<br>予期せぬコロナ禍で、互いを遠くから見つめるしかなかった時間、愛しさはより一層深まりました。',
-    img: '/api/photos/story_2.jpeg',
+    img: '/api/photos/story_2-2.jpeg',
   },
   {
     date: '2023 · 프로포즈',
@@ -172,73 +205,78 @@ let navigating = false
 let coolTimer = 0
 
 // 터치용
-let startY = 0
 let lastTouchY = 0
-let lastScrollY = 0
-let stuckAtTop = false
+let pullAtTop = 0  // 최상단에서 당긴 거리
 
 // 휠용
 let wheelStuckCount = 0
 let wheelTimer = 0
 
-function onTouchStart (e) {
-  startY = e.touches?.[0]?.clientY ?? 0
-  lastTouchY = startY
-  lastScrollY = window.scrollY || 0
-  stuckAtTop = false
-}
-
-function onTouchMove (e) {
-  if (navigating) return
-
-  const currentY = e.touches?.[0]?.clientY ?? 0
-  const currentScrollY = window.scrollY || 0
-  const dy = currentY - startY
-  const touchDelta = currentY - lastTouchY   // 손가락 이동량
-  const scrollDelta = currentScrollY - lastScrollY  // 스크롤 이동량
-
-  // 최상단에서 손가락은 아래로 움직이는데 스크롤은 안 움직임 = 막힘
-  if (currentScrollY <= 0 && touchDelta > 3 && Math.abs(scrollDelta) < 1) {
-    stuckAtTop = true
-  }
-
-  // 막힌 상태에서 충분히 당기면 이동
-  if (stuckAtTop && dy > THRESH_TOUCH) {
-    triggerNav(goPrev)
-  }
-
-  lastTouchY = currentY
-  lastScrollY = currentScrollY
-}
-
-function onWheel (e) {
-  if (navigating) return
-
-  const currentScrollY = window.scrollY || 0
-
-  // 최상단에서 위로 휠하는데 스크롤이 안 움직이면 카운트 증가
-  if (currentScrollY <= 0 && e.deltaY < -THRESH_WHEEL) {
-    wheelStuckCount++
-  } else {
-    wheelStuckCount = 0
-  }
-
-  // 휠 세션 리셋 타이머
-  clearTimeout(wheelTimer)
-  wheelTimer = setTimeout(() => { wheelStuckCount = 0 }, 200)
-
-  // 2번 이상 막히면 이동 (연속으로 휠해야 함)
-  if (wheelStuckCount >= 2) {
-    triggerNav(goPrev)
-  }
-}
-
-function triggerNav (fn) {
+function triggerNav(fn) {
   if (navigating) return
   navigating = true
   fn()
   clearTimeout(coolTimer)
   coolTimer = setTimeout(() => (navigating = false), COOLDOWN_MS)
+}
+
+function onTouchStart(e) {
+  lastTouchY = e.touches?.[0]?.clientY ?? 0
+  pullAtTop = 0
+}
+
+function onTouchMove(e) {
+  if (navigating) return
+
+  const currentY = e.touches?.[0]?.clientY ?? 0
+  const currentScrollY = window.scrollY || 0
+  const touchDelta = currentY - lastTouchY
+
+  // ✅ 디버깅용 로그 추가
+  console.log('scrollY:', currentScrollY, 'touchDelta:', touchDelta, 'pullAtTop:', pullAtTop)
+
+  if (currentScrollY === 0 && touchDelta > 50) {
+    pullAtTop += touchDelta
+  } else {
+    pullAtTop = 0
+  }
+
+  if (pullAtTop > THRESH_TOUCH) {
+    console.log('🚀 이전 페이지로 이동!')
+    triggerNav(goPrev)
+  }
+
+  lastTouchY = currentY
+}
+
+function onTouchEnd() {
+  pullAtTop = 0
+}
+
+function onWheel(e) {
+  if (navigating) return
+
+  const currentScrollY = window.scrollY || 0
+
+  // 최상단이 아니면 무시
+  if (currentScrollY > 0) {
+    wheelStuckCount = 0
+    return
+  }
+
+  // 최상단에서 위로 휠
+  if (e.deltaY < -THRESH_WHEEL) {
+    wheelStuckCount++
+  } else {
+    wheelStuckCount = 0
+  }
+
+  clearTimeout(wheelTimer)
+  wheelTimer = setTimeout(() => { wheelStuckCount = 0 }, 200)
+
+  if (wheelStuckCount >= 2) {
+    triggerNav(goPrev)
+  }
 }
 
 /* ========= 모달 ========= */
@@ -344,6 +382,11 @@ function showToast (msg) {
   toast.value = msg
   toastTimer = setTimeout(() => (toast.value = ''), 1500)
 }
+function copyAccount(account) {
+  navigator.clipboard.writeText(account)
+      .then(() => showToast('계좌번호가 복사되었습니다 ✓'))
+      .catch(() => showToast('복사 실패 😢'))
+}
 
 /* ========= 라이프사이클 ========= */
 onMounted(async () => {
@@ -351,6 +394,7 @@ onMounted(async () => {
   document.documentElement.style.overscrollBehaviorY = 'none'
   window.addEventListener('touchstart', onTouchStart, { passive: true })
   window.addEventListener('touchmove',  onTouchMove,  { passive: true })
+  window.addEventListener('touchend',   onTouchEnd,   { passive: true })  // 추가
   window.addEventListener('wheel',      onWheel,      { passive: true })
 
   document.addEventListener('visibilitychange', onVisChange)
@@ -368,6 +412,7 @@ onBeforeUnmount(() => {
 
   window.removeEventListener('touchstart', onTouchStart)
   window.removeEventListener('touchmove',  onTouchMove)
+  window.removeEventListener('touchend',   onTouchEnd)  // 추가
   window.removeEventListener('wheel',      onWheel)
   document.removeEventListener('visibilitychange', onVisChange)
 
@@ -530,6 +575,48 @@ function onVisChange(){
 }
 .cyl-fade.left{  left:0;  background: linear-gradient(to right, rgba(255,255,255,1), rgba(255,255,255,0)); }
 .cyl-fade.right{ right:0; background: linear-gradient(to left,  rgba(255,255,255,1), rgba(255,255,255,0)); }
+
+.account-section{
+  margin: 16px 0;
+  padding: 16px;
+  border-radius: 16px;
+  background: #fff5f7;
+  border: 1px solid rgba(255,138,163,.25);
+}
+.account-section .form-title{ margin: 0 0 12px; font-size: 15px; font-weight: 800; color: #b80c4f; }
+.account-row{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+.account-row .label{
+  font-weight: 700;
+  font-size: 13px;
+  color: #ff8aa3;
+  min-width: 48px;
+}
+.account-row .bank{ font-size: 13px; color: #64748b; }
+.account-row .number{ font-size: 14px; font-weight: 600; color: #111; letter-spacing: 0.5px; }
+.btn-copy{
+  padding: 4px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,138,163,.4);
+  background: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  color: #b80c4f;
+  cursor: pointer;
+  transition: background .15s ease;
+}
+.btn-copy:hover{ background: #fff0f3; }
+.btn-copy:active{ transform: translateY(1px); }
+.holder{
+  margin: 4px 0 0 56px;
+  font-size: 12px;
+  color: #94a3b8;
+}
 
 :where(.page, .timeline)[data-dark] .cyl-item,
 :where(.page, .timeline).dark .cyl-item{
