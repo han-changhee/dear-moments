@@ -20,9 +20,9 @@
       </div>
 
       <!-- 텍스트 -->
-      <h1 class="title">결혼 앨범을 준비하고 있어요</h1>
+      <h1 class="title">Wait..</h1>
       <p class="subtitle">
-        소중한 순간을 불러오는 중<span class="dots" aria-hidden="true">
+        소중한 순간을 불러오는 중...<br> 大切な瞬間を読み込んでいます...<span class="dots" aria-hidden="true">
           <i></i><i></i><i></i>
         </span>
       </p>

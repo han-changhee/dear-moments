@@ -55,7 +55,7 @@
 
       <div class="cta-wrap">
         <button class="btn-cta" type="button" @click="openDialog">
-          🎁 축하의 마음 전하기
+          🎁 축하의 마음 전하기 お祝いのメッセージ
         </button>
       </div>
     </section>
@@ -71,14 +71,14 @@
     >
       <div class="modal-card" ref="dialogCard" tabindex="-1">
         <header class="modal-head">
-          <h3 id="gift-title">💌 축하의 마음 전하는 곳</h3>
+          <h3 id="gift-title">💌 축하의 마음 전하는 곳 メッセージ</h3>
           <button class="icon-btn" type="button" @click="closeDialog" aria-label="닫기">✕</button>
         </header>
 
         <div class="msg-form">
-          <h4 class="form-title">✨ 메시지 남기기</h4>
+          <h4 class="form-title">✨ 메시지 남기기 (メッセージ)</h4>
 
-          <label for="msgName">성함 (선택)</label>
+          <label for="msgName">성함 (名前）</label>
           <input
               id="msgName"
               v-model="newName"
@@ -87,13 +87,13 @@
               placeholder="이름을 적어주세요"
           />
 
-          <label for="msgText">메시지</label>
+          <label for="msgText">메시지 (メッセージ)</label>
           <textarea
               id="msgText"
               v-model="newText"
               rows="3"
               maxlength="120"
-              placeholder="축하 메시지를 남겨주세요 (최대 120자)"
+              placeholder="축하 메시지를 남겨주세요 メッセージを残してください (최대 120자 最大120文字) "
           ></textarea>
 
           <button class="btn-send" type="button" :disabled="sending" @click="sendMessage">
@@ -169,7 +169,7 @@ const events = [
   },
   {
     date: '2023 · 프로포즈',
-    text: '길었던 기다림 끝, 함께 걸어갈 평생을 약속하며 행복의 시작을 맞이했어요.<br>長い時を経て、共に歩む生涯を誓い、幸せな門出を迎えることとなりました。',
+    text: '2년만의 재회, 꿈같던 1년의 워킹홀리데이 끝자락에서, 헤어짐의 아쉬움 대신 평생을 함께하는 설렘을 선택했습니다.<br>2年ぶりの再会、夢のような1年間のワーキングホリデーの終わりを迎え、別れの名残惜しさではなく、生涯を共に歩む幸せを選びました。',
     img: '/api/photos/story_3.jpeg',
   },
   {

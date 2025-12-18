@@ -63,7 +63,7 @@
       </svg>
 
       <!-- 안내 텍스트(첫 상호작용 전) -->
-      <div v-if="!started" class="hint">한 번 스크롤하거나 터치하면 출발합니다</div>
+      <div v-if="!started" class="hint">한 번 스크롤하거나 터치하면 출발합니다.<br> スクロール、またはタッチすると出発します。</div>
     </div>
   </section>
 </template>

@@ -9,6 +9,7 @@ export default defineConfig({
   base: '/', // 🚨 [핵심 수정]
   plugins: [vue(), mkcert()],
   server: {
+    allowedHosts: true,
     https: false,
     host: true,
     port: 5173,

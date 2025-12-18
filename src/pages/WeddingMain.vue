@@ -2,8 +2,8 @@
   <section class="page">
     <header class="hero" :style="{'--hero-url': `url('${heroUrl}')`}">
       <div class="hero-inner">
-        <h1 class="title">결혼했습니다</h1>
-        <p class="subtitle">우리의 시작을 기록합니다</p>
+        <h1 class="title">결혼했습니다  結婚しました</h1>
+        <p class="subtitle">우리의 시작을 기록합니다 ふたりの始まりを綴ります</p>
         <div class="date-tag">2024.06.05</div>
       </div>
 
