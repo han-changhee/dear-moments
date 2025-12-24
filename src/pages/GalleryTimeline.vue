@@ -235,7 +235,7 @@ function onTouchMove(e) {
   // ✅ 디버깅용 로그 추가
   console.log('scrollY:', currentScrollY, 'touchDelta:', touchDelta, 'pullAtTop:', pullAtTop)
 
-  if (currentScrollY === 0 && touchDelta > 50) {
+  if (currentScrollY <= 0 && touchDelta > 50) {
     pullAtTop += touchDelta
   } else {
     pullAtTop = 0
@@ -383,9 +383,67 @@ function showToast (msg) {
   toastTimer = setTimeout(() => (toast.value = ''), 1500)
 }
 function copyAccount(account) {
-  navigator.clipboard.writeText(account)
+  copyToClipboard(account)
       .then(() => showToast('계좌번호가 복사되었습니다 ✓'))
-      .catch(() => showToast('복사 실패 😢'))
+      .catch(() => {
+        // 최후의 수단: 직접 복사 안내
+        showToast('길게 눌러서 복사해주세요')
+        prompt('계좌번호를 복사하세요:', account)
+      })
+}
+
+async function copyToClipboard(text) {
+  // 1. 최신 Clipboard API (HTTPS 환경)
+  if (navigator.clipboard && window.isSecureContext) {
+    try {
+      await navigator.clipboard.writeText(text)
+      return
+    } catch (e) {
+      // 실패하면 다음 방법으로
+    }
+  }
+
+  // 2. iOS Safari 대응 (input 사용)
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
+
+  if (isIOS) {
+    const input = document.createElement('input')
+    input.value = text
+    input.readOnly = true  // iOS 키보드 방지
+    input.style.position = 'absolute'
+    input.style.left = '-9999px'
+    input.style.fontSize = '16px'  // iOS 줌 방지
+    document.body.appendChild(input)
+
+    // iOS는 setSelectionRange 필요
+    input.focus()
+    input.setSelectionRange(0, text.length)
+
+    const success = document.execCommand('copy')
+    document.body.removeChild(input)
+
+    if (success) return
+    throw new Error('iOS copy failed')
+  }
+
+  // 3. Android / 기타 브라우저 (textarea 사용)
+  const textarea = document.createElement('textarea')
+  textarea.value = text
+  textarea.style.position = 'fixed'
+  textarea.style.left = '-9999px'
+  textarea.style.top = '0'
+  textarea.setAttribute('readonly', '')  // 모바일 키보드 방지
+  document.body.appendChild(textarea)
+
+  textarea.focus()
+  textarea.select()
+
+  try {
+    const success = document.execCommand('copy')
+    if (!success) throw new Error('execCommand failed')
+  } finally {
+    document.body.removeChild(textarea)
+  }
 }
 
 /* ========= 라이프사이클 ========= */
